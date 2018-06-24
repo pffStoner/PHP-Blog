@@ -2,12 +2,26 @@
 	require('config/config.php');
 	require('config/db.php');
 
-	//get id
+	if (isset($_POST['delete'])) {
+		// get form data
+		$delete_id = mysqli_real_escape_string($conn, $_POST['delete_id']);
+
+
+	$query = "DELETE FROM posts WHERE id = {$delete_id}";
+
+		 if (mysqli_query($conn, $query)) {
+		 	var_dump($query);
+		 	header('Location: '.ROOT_URL.'');
+		 	var_dump($query);
+		 }else {
+		 	echo "error".mysqli_error($conn);
+		 }
+    }
+    //get id
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
 
 	//create query
-	$query = 'SELECT * from posts WHERE id = '.$id;
-
+	$query = 'SELECT * FROM posts WHERE id = '.$id;
 	//get result
 	$result =  mysqli_query($conn, $query);
 
@@ -35,7 +49,10 @@
 				<p><?php echo $post['body']; ?></p>
 			<hr>
 			<a class="btn" href="<?php echo ROOT_URL; ?>editpost.php?id=<?php echo $post['id']; ?>">Edit </a>
-
+			<form method="POST" class="pull-right" action="<?php echo $_SERVER['PHP_SELF'];?>">
+					<input type="hidden" name="delete_id" value="<?php echo $post['id']; ?>">
+					<input type="submit" name="delete" value="Delete" class="btn btn-danger">
+			</form>
 
 			</article>
 		</div>

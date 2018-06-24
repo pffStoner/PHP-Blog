@@ -3,11 +3,16 @@
 	require('config/db.php');
 	if (isset($_POST['submit'])) {
 		// get form data
+		$update_id = mysqli_real_escape_string($conn, $_POST['id']);
 		$title = mysqli_real_escape_string($conn, $_POST['title']);
 		$author = mysqli_real_escape_string($conn, $_POST['author']);
 		$body = mysqli_real_escape_string($conn, $_POST['body']);
 
-        $query = "INSERT INTO posts(title,body, author) VALUES('$title','$body','$author')";
+        $query = "UPDATE  posts SET
+					title = '$title',
+					author = '$author',
+					body = '$body'
+								WHERE id = {$update_id}";
 
 		 if (mysqli_query($conn, $query)) {
 		 	var_dump($query);
@@ -21,11 +26,10 @@
 	$id = mysqli_real_escape_string($conn, $_GET['id']);
 
 	//create query
-	$query = 'SELECT * from posts WHERE id = '.$id;
+	$query = 'SELECT * FROM posts WHERE id = '.$id;
 
 	//get result
 	$result =  mysqli_query($conn, $query);
-
 
 	//fetch data
 	$post = mysqli_fetch_assoc($result);
@@ -58,8 +62,10 @@
 					<textarea type="text" name="body" class="form-control" 
                      ><?php echo $post["body"]; ?></textarea>
 				</div>
+				
+				<input type="hidden" name="id" value="<?php echo $post['id']; ?>">
 				<input type="submit" name="submit" value="submit" class="btn btn-default">
 			</form>
-		
+		 
 		</div>
 	<?php include('inc/footer.php'); ?> 
